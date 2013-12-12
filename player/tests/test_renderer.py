@@ -105,5 +105,5 @@ class TestRender(BaseTestCase):
         It is possible to use standard renderers as asset var
         """
         text = player.render(
-            self.request, 'player:tests/dir1/view.jinja2')
+            self.request, 'player:tests/dir1/view.pt')
         self.assertEqual(text, '<h1>Test</h1>')

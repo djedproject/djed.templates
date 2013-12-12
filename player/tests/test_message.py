@@ -12,7 +12,7 @@ class TestStatusMessages(BaseTestCase):
     def test_messages_addmessage(self):
         add_message(self.request, 'message')
 
-        res = render_messages(self.request)
+        res = render_messages(self.request).strip()
 
         self.assertEqual(
             res,
@@ -22,7 +22,7 @@ class TestStatusMessages(BaseTestCase):
         add_message(self.request, 'warning', 'warning')
 
         self.assertEqual(
-            render_messages(self.request),
+            render_messages(self.request).strip(),
             text_('<div class="alert alert-warning">\n  <a class="close" data-dismiss="alert">×</a>\n  warning\n</div>','utf-8'))
 
     def test_messages_error_msg(self):
@@ -78,7 +78,7 @@ class TestStatusMessages(BaseTestCase):
         add_message(self.request, 'message')
 
         self.assertEqual(
-            render_messages(self.request),
+            render_messages(self.request).strip(),
             text_('<div class="alert alert-info">\n  <a class="close" data-dismiss="alert">×</a>\n  message\n</div>','utf-8'))
 
         msg = render_messages(self.request)
@@ -98,7 +98,7 @@ class TestStatusMessages(BaseTestCase):
         req = self.make_request()
         req.add_message('message')
 
-        res = req.render_messages()
+        res = req.render_messages().strip()
 
         self.assertEqual(
             res,
