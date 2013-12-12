@@ -18,7 +18,7 @@ from player.message import add_message
 
 
 def includeme(cfg):
-    cfg.include('pyramid_jinja2')
+    cfg.include('pyramid_chameleon')
 
     import os
     from pyramid.path import AssetResolver

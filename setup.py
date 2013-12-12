@@ -8,7 +8,7 @@ version='0.6.1'
 
 install_requires = ['setuptools',
                     'pyramid >= 1.4',
-                    'pyramid_jinja2',
+                    'pyramid_chameleon',
 ]
 
 if sys.version_info[:2] == (2, 6):
