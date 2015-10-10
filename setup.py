@@ -17,7 +17,7 @@ if sys.version_info[:2] == (2, 6):
         'ordereddict',
         'unittest2'))
 
-tests_require = install_requires + ['nose', 'mock']
+tests_require = install_requires + ['nose']
 
 def read(f):
     return open(os.path.join(os.path.dirname(__file__), f)).read().strip()
