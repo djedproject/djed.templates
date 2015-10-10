@@ -4,8 +4,8 @@ from pyramid.renderers import RendererHelper
 
 from .layer import ID_LAYER
 
-ID_TEMPLATE = 'player:template'
-ID_TEMPLATE_EXT = 'player:template-ext'
+ID_TEMPLATE = 'djed.templates:template'
+ID_TEMPLATE_EXT = 'djed.templates:template-ext'
 
 
 class RendererNotFound(ValueError):

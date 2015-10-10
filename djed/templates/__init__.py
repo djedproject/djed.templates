@@ -1,4 +1,4 @@
-# player public api
+# djed.templates public api
 
 __all__ = ['tmpl_filter', 'layout', 'add_message',
            'render', 'RendererNotFound', 'includeme']
@@ -10,11 +10,11 @@ except ImportError: # pragma: no cover
     from ordereddict import OrderedDict
     collections.OrderedDict = OrderedDict
 
-from player.layer import tmpl_filter
-from player.layout_impl import layout
-from player.renderer import render
-from player.renderer import RendererNotFound
-from player.message import add_message
+from djed.templates.layer import tmpl_filter
+from djed.templates.layout_impl import layout
+from djed.templates.renderer import render
+from djed.templates.renderer import RendererNotFound
+from djed.templates.message import add_message
 
 
 def includeme(cfg):
@@ -25,10 +25,10 @@ def includeme(cfg):
     from pyramid.settings import aslist
     from pyramid.exceptions import ConfigurationError
 
-    from player.renderer import lt_renderer_factory
-    from player.layer import add_layer, add_layers, change_layers_order
-    from player.layer import add_tmpl_filter
-    from player.layout_impl import add_layout, set_layout_data
+    from djed.templates.renderer import lt_renderer_factory
+    from djed.templates.layer import add_layer, add_layers, change_layers_order
+    from djed.templates.layer import add_tmpl_filter
+    from djed.templates.layout_impl import add_layout, set_layout_data
 
     # config directives
     cfg.add_directive('add_layer', add_layer)
@@ -50,7 +50,7 @@ def includeme(cfg):
     cfg.add_renderer('.lt', lt_renderer_factory)
 
     # layout renderer
-    cfg.add_renderer('player:layout', layout)
+    cfg.add_renderer('djed.templates:layout', layout)
 
     # order
     settings = cfg.get_settings()
@@ -63,7 +63,7 @@ def includeme(cfg):
 
     if order:
         cfg.action(
-            'player.order',
+            'djed.templates.order',
             change_layers_order, (cfg, order), order=999999+1)
 
     # global custom layer
@@ -76,21 +76,21 @@ def includeme(cfg):
                 "Directory is required for layer.custom setting: %s"%custom)
 
         cfg.action(
-            'player.custom',
+            'djed.templates.custom',
             add_layers, (cfg, 'layer_custom', custom), order=999999+2)
 
     # formatters
-    from player import formatter
+    from djed.templates import formatter
     cfg.add_directive('add_formatter', formatter.add_formatter)
     cfg.add_request_method(formatter.formatters, 'fmt', True, True)
 
     # messages layer and request helpers
-    from player.message import render_messages
+    from djed.templates.message import render_messages
 
-    cfg.add_layer('message', path='player:templates/message/')
+    cfg.add_layer('message', path='djed.templates:templates/message/')
 
     cfg.add_request_method(add_message, 'add_message')
     cfg.add_request_method(render_messages, 'render_messages')
 
     # scan
-    cfg.scan('player')
+    cfg.scan('djed.templates')

@@ -1,7 +1,7 @@
 from pyramid.exceptions import ConfigurationError
-from player.layer import ID_LAYER
+from djed.templates.layer import ID_LAYER
 
-from base import BaseTestCase
+from .base import BaseTestCase
 
 
 class TestSettingsError(BaseTestCase):
@@ -11,17 +11,17 @@ class TestSettingsError(BaseTestCase):
 
     def test_custom(self):
         self.assertRaises(
-            ConfigurationError, self.config.include, 'player')
+            ConfigurationError, self.config.include, 'djed.templates')
 
 
 class TestSettingsCustom(BaseTestCase):
 
     _auto_include = False
-    _settings = {'layer.custom': 'player:tests/bundle/'}
+    _settings = {'layer.custom': 'tests:bundle/'}
 
     def test_custom_dir(self):
         self.config.add_layer(
-            'dir1', path='player:tests/dir1/')
+            'dir1', path='tests:dir1/')
         self.config.commit()
 
         storage = self.registry.get(ID_LAYER)

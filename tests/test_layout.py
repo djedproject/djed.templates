@@ -5,7 +5,7 @@ from zope import interface
 from pyramid.compat import text_
 from pyramid.interfaces import IRequest, IRouteRequest
 
-from base import BaseTestCase
+from .base import BaseTestCase
 
 class View(object):
 
@@ -28,7 +28,7 @@ class TestLayout(BaseTestCase):
         shutil.rmtree(self.dir)
 
     def test_layout_register_simple(self):
-        from player.layout_impl import query_layout
+        from djed.templates.layout_impl import query_layout
 
         self.config.add_layout('test')
 
@@ -38,7 +38,7 @@ class TestLayout(BaseTestCase):
         self.assertIs(layout.original, None)
 
     def test_layout_register_custom_class(self):
-        from player.layout_impl import query_layout
+        from djed.templates.layout_impl import query_layout
 
         class MyLayout(object):
             pass
@@ -49,7 +49,7 @@ class TestLayout(BaseTestCase):
         self.assertIs(layout.original, MyLayout)
 
     def test_layout_simple_declarative(self):
-        from player.layout_impl import LayoutRenderer
+        from djed.templates.layout_impl import LayoutRenderer
 
         class Layout(View):
             def __call__(self):
@@ -57,7 +57,7 @@ class TestLayout(BaseTestCase):
 
         self.config.add_layout(
             'test', context=Context,
-            renderer='player:tests/test-layout-html.pt')
+            renderer='tests:test-layout-html.pt')
 
         renderer = LayoutRenderer('test')
         res = renderer('View: test', Context(), self.request)
@@ -65,10 +65,10 @@ class TestLayout(BaseTestCase):
 
     def test_layout_pyramid_declarative(self):
         from pyramid.config import Configurator
-        from player.layout_impl import ILayout
+        from djed.templates.layout_impl import ILayout
 
         config = Configurator(autocommit=True)
-        config.include('player')
+        config.include('djed.templates')
         config.commit()
 
         class Layout(View):
@@ -83,20 +83,20 @@ class TestLayout(BaseTestCase):
         self.assertIs(layout_factory.original, Layout)
 
     def test_layout_simple_notfound(self):
-        from player.layout_impl import query_layout
+        from djed.templates.layout_impl import query_layout
 
         v = View(Context(Context()), self.request)
         layout, context = query_layout(object(), v.context, self.request,'test')
         self.assertTrue(layout is None)
 
     def test_layout_simple_chain_multi_level(self):
-        from player.layout_impl import LayoutRenderer
+        from djed.templates.layout_impl import LayoutRenderer
 
         self.config.add_layout(
-            'test', parent='.', renderer='player:tests/test-layout.pt')
+            'test', parent='.', renderer='tests:test-layout.pt')
         self.config.add_layout(
             '', context=Root, parent=None,
-            renderer='player:tests/test-layout-html.pt')
+            renderer='tests:test-layout-html.pt')
 
         root = Root()
         context = Context(root)
@@ -106,14 +106,14 @@ class TestLayout(BaseTestCase):
         self.assertIn('<html><div>View: test</div>\n</html>', text_(res))
 
     def test_layout_chain_same_layer_id_on_different_levels(self):
-        from player.layout_impl import LayoutRenderer
+        from djed.templates.layout_impl import LayoutRenderer
 
         self.config.add_layout(
             '', context=Context, parent='.',
-            renderer='player:tests/test-layout.pt')
+            renderer='tests:test-layout.pt')
         self.config.add_layout(
             '', context=Root, parent=None,
-            renderer='player:tests/test-layout-html.pt')
+            renderer='tests:test-layout-html.pt')
 
         root = Root()
         context1 = Context2(root)
@@ -125,19 +125,19 @@ class TestLayout(BaseTestCase):
 
     def test_layout_chain_parent_notfound(self):
         self.config.add_layout('', context=Context, parent='page',
-                               renderer='player:tests/test-layout.pt')
+                               renderer='tests:test-layout.pt')
 
         root = Root()
         context = Context(root)
 
-        from player.layout_impl import LayoutRenderer
+        from djed.templates.layout_impl import LayoutRenderer
         renderer = LayoutRenderer('')
 
         res = renderer('View: test', context, self.request)
         self.assertTrue('<div>View: test</div>' in text_(res))
 
     def test_layout_for_route(self):
-        from player.layout_impl import query_layout
+        from djed.templates.layout_impl import query_layout
 
         self.config.add_route('test-route', '/test/', use_global_views=False)
         self.config.add_layout(
@@ -154,7 +154,7 @@ class TestLayout(BaseTestCase):
         self.assertIsNotNone(layout)
 
     def test_layout_for_route_global_views(self):
-        from player.layout_impl import query_layout
+        from djed.templates.layout_impl import query_layout
 
         self.config.add_route('test-route', '/test/', use_global_views=False)
         self.config.add_layout('test', use_global_views=True)
@@ -167,7 +167,7 @@ class TestLayout(BaseTestCase):
         self.assertIsNotNone(layout)
 
     def test_layout_root(self):
-        from player.layout_impl import query_layout
+        from djed.templates.layout_impl import query_layout
 
         class Root1(object):
             pass
@@ -214,7 +214,7 @@ class TestLayout(BaseTestCase):
         context2.__parent__ = context1
         context3.__parent__ = context2
 
-        from player.layout_impl import query_layout_chain
+        from djed.templates.layout_impl import query_layout_chain
         chain = query_layout_chain(root, context1, self.request, 'l1')
 
         self.assertEqual(len(chain), 1)
@@ -233,9 +233,9 @@ class TestLayout(BaseTestCase):
         self.assertIs(chain[1][0].original, Layout2)
         self.assertIs(chain[2][0].original, Layout1)
 
-    @mock.patch('player.layout_impl.query_layout_chain')
+    @mock.patch('djed.templates.layout_impl.query_layout_chain')
     def test_layout_renderer_no_layouts(self, m):
-        from player.layout_impl import LayoutRenderer
+        from djed.templates.layout_impl import LayoutRenderer
         m.return_value = []
         rendr = LayoutRenderer('test')
 
@@ -245,9 +245,9 @@ class TestLayout(BaseTestCase):
         self.assertIs(res, o)
 
     def test_layout_renderer_layout_debug(self):
-        from player.layout_impl import LayoutRenderer
+        from djed.templates.layout_impl import LayoutRenderer
         self.config.add_layout('test', view=View,
-                               renderer='player:tests/test-layout.pt')
+                               renderer='tests:test-layout.pt')
         self.request.__layout_debug__ = True
 
         rendr = LayoutRenderer('test')
@@ -256,17 +256,17 @@ class TestLayout(BaseTestCase):
         self.assertIn('<!-- layout:', str(res))
         self.assertIn('<h1>text</h1>', str(res))
 
-    @mock.patch('player.layout_impl.random')
+    @mock.patch('djed.templates.layout_impl.random')
     def test_layout_renderer(self, m):
-        import player
+        import djed.templates
 
         m.choice.return_value = 'red'
 
         self.config.add_layout('test', view=View,
-                               renderer='player:tests/test-layout.pt')
+                               renderer='tests:test-layout.pt')
         self.config.add_view(
             name='view.html',
-            renderer=player.layout('player:tests/dir1/view.pt', 'test'))
+            renderer=djed.templates.layout('tests:dir1/view.pt', 'test'))
 
         from pyramid.view import render_view_to_response
 
@@ -276,22 +276,22 @@ class TestLayout(BaseTestCase):
         self.assertEqual('<div><h1>Test</h1></div>', res1.text.strip())
 
     def test_layout_renderer_no_template(self):
-        import player
+        import djed.templates
         from pyramid.view import render_view_to_response
 
         def view(request):
             return 'test'
 
         self.config.add_view(
-            name='view.html', view=view, renderer=player.layout())
+            name='view.html', view=view, renderer=djed.templates.layout())
         self.config.add_layout(
-            '', view=View, renderer='player:tests/test-layout.pt')
+            '', view=View, renderer='tests:test-layout.pt')
 
         res = render_view_to_response(Context(), self.request, 'view.html')
         self.assertEqual('<div>test</div>', res.text.strip())
 
     def test_layout_return_response(self):
-        import player
+        import djed.templates
         from pyramid.view import render_view_to_response
         from pyramid.httpexceptions import HTTPFound
 
@@ -299,15 +299,15 @@ class TestLayout(BaseTestCase):
             return HTTPFound(location='/')
 
         self.config.add_view(
-            name='view.html', renderer=player.layout())
+            name='view.html', renderer=djed.templates.layout())
         self.config.add_layout(
-            '', view=view, renderer='player:tests/test-layout.pt')
+            '', view=view, renderer='tests:test-layout.pt')
 
         res = render_view_to_response(Context(), self.request, 'view.html')
         self.assertIsInstance(res, HTTPFound)
 
     def test_layout_renderer_layout_info(self):
-        from player.layout_impl import query_layout, LayoutRenderer
+        from djed.templates.layout_impl import query_layout, LayoutRenderer
 
         self.config.add_layout('test')
         self.config.add_layout('test2', view=View)
@@ -321,10 +321,10 @@ class TestLayout(BaseTestCase):
         rendr = LayoutRenderer('test2')
         l = query_layout(Root(), Context(), self.request, 'test2')[0]
         res = rendr.layout_info(l, Context(), self.request, 'content')
-        self.assertIn('"layout-factory": "test_layout.View"', res)
+        self.assertIn('"layout-factory": "tests.test_layout.View"', res)
 
     def test_query_layout_no_request_iface(self):
-        from player.layout_impl import query_layout
+        from djed.templates.layout_impl import query_layout
 
         self.config.add_layout('test')
         l1 = query_layout(Root(), Context(), self.request, 'test')[0]
@@ -333,9 +333,9 @@ class TestLayout(BaseTestCase):
         l2 = query_layout(Root(), Context(), self.request, 'test')[0]
         self.assertIs(l1, l2)
 
-    @mock.patch('player.layout_impl.query_layout')
+    @mock.patch('djed.templates.layout_impl.query_layout')
     def test_query_layout_chain(self, m):
-        from player.layout_impl import query_layout_chain
+        from djed.templates.layout_impl import query_layout_chain
 
         m.return_value = (None, None)
         chain = query_layout_chain(Root(), Context(), self.request)

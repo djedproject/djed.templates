@@ -1,13 +1,13 @@
 """ formatters """
 from pyramid.registry import Introspectable
 
-ID_FORMATTER = 'player:formatter'
+ID_FORMATTER = 'djed.templates:formatter'
 
 
 def add_formatter(cfg, name, callable):
     discr = (ID_FORMATTER, name)
 
-    intr = Introspectable(ID_FORMATTER, discr, name, 'player-formatter')
+    intr = Introspectable(ID_FORMATTER, discr, name, 'djed.templates-formatter')
     intr['name'] = name
     intr['callable'] = callable
     intr['description'] = callable.__doc__

@@ -2,7 +2,7 @@
 from pyramid.config import Configurator
 from pyramid.exceptions import ConfigurationConflictError
 
-from base import BaseTestCase
+from .base import BaseTestCase
 
 
 class TestFormatter(BaseTestCase):
@@ -45,7 +45,7 @@ class TestFormatter(BaseTestCase):
             """ """
 
         config = Configurator()
-        config.include('player')
+        config.include('djed.templates')
 
         config.add_formatter('test', simple1)
         config.add_formatter('test', simple2)
@@ -58,7 +58,7 @@ class TestFormatter(BaseTestCase):
 
         self.config.add_formatter('simple', simple)
 
-        from player.formatter import ID_FORMATTER
+        from djed.templates.formatter import ID_FORMATTER
 
         discr = (ID_FORMATTER, 'simple')
         intr = self.config.introspector.get(ID_FORMATTER, discr)

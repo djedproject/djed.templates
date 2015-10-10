@@ -1,6 +1,6 @@
 """ simple messages """
 from pyramid.compat import escape, string_types
-from player import render, tmpl_filter
+from djed.templates import render, tmpl_filter
 
 
 def add_message(request, msg, type='info'):

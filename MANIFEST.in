@@ -1,0 +1,9 @@
+include CHANGES.txt
+include LICENSE.txt
+include README.rst
+
+graft djed
+graft docs
+graft tests
+
+global-exclude *.pyc

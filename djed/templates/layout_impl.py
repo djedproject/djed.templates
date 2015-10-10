@@ -14,9 +14,9 @@ from pyramid.registry import Introspectable
 from pyramid.renderers import RendererHelper
 from pyramid.interfaces import IRequest, IResponse, IRouteRequest
 
-log = logging.getLogger('player')
+log = logging.getLogger('djed.templates')
 
-LAYOUT_ID = 'player:layout'
+LAYOUT_ID = 'djed.templates:layout'
 
 LayoutInfo = namedtuple(
     'LayoutInfo', 'name layout view original renderer intr')
@@ -107,7 +107,7 @@ def add_layout(cfg, name='', context=None, root=None, parent=None,
       config.add_layout('page', parent='page', renderer='my_package:template/page.pt')
 
 
-    To use layout with pyramid view use ``renderer=player.layout('my_pkg:template/page.pt')``
+    To use layout with pyramid view use ``renderer=djed.templates.layout('my_pkg:template/page.pt')``
 
     Example:
 
@@ -115,10 +115,10 @@ def add_layout(cfg, name='', context=None, root=None, parent=None,
 
       config.add_view('
           index.html',
-          renderer = player.layout('...'))
+          renderer = djed.templates.layout('...'))
 
     in this example '' layout is beeing used. You can specify specific layout
-    name for pyramid view ``player.layout('page', 'layout name')``
+    name for pyramid view ``djed.templates.layout('page', 'layout name')``
 
     """
     (scope, module,
@@ -129,7 +129,7 @@ def add_layout(cfg, name='', context=None, root=None, parent=None,
 
     discr = (LAYOUT_ID, name, context, route_name)
 
-    intr = Introspectable(LAYOUT_ID, discr, name, 'player_layout')
+    intr = Introspectable(LAYOUT_ID, discr, name, 'djed.templates_layout')
 
     intr['name'] = name
     intr['context'] = context
@@ -246,7 +246,7 @@ class layout(RendererHelper):
 
     package = None
     renderer = None
-    type = 'player:layout'
+    type = 'djed.templates:layout'
 
     def __init__(self, name='', layout=''):
         self.name = name

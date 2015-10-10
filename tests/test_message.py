@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-""" Unit tests for L{player.message} """
+""" Unit tests for L{djed.templates.message} """
 from pyramid.compat import text_
 
-from base import BaseTestCase
-from player.message import add_message
-from player.message import render_messages
+from .base import BaseTestCase
+from djed.templates.message import add_message
+from djed.templates.message import render_messages
 
 
 class TestStatusMessages(BaseTestCase):
@@ -46,7 +46,7 @@ class TestStatusMessages(BaseTestCase):
 
     def test_messages_custom_msg(self):
         self.config.add_layer(
-            'message', 'test', path='player:tests/message/')
+            'message', 'test', path='tests:message/')
 
         add_message(self.request, 'message', 'custom')
         self.assertEqual(
@@ -55,7 +55,7 @@ class TestStatusMessages(BaseTestCase):
 
     def test_messages_custom_msg_different_type(self):
         self.config.add_layer(
-            'test', path='player:tests/message/')
+            'test', path='tests:message/')
 
         add_message(self.request, 'message', 'test:custom')
         self.assertEqual(
@@ -64,7 +64,7 @@ class TestStatusMessages(BaseTestCase):
 
     def test_messages_render_message_with_error(self):
         self.config.add_layer(
-            'message', 'test', path='player:tests/messages/')
+            'message', 'test', path='tests:messages/')
 
         def customMessage(context, request):
             raise ValueError()
@@ -85,7 +85,7 @@ class TestStatusMessages(BaseTestCase):
         self.assertEqual(msg, '')
 
     def test_messages_unknown_type(self):
-        from player import RendererNotFound
+        from djed.templates import RendererNotFound
 
         self.assertRaises(
             RendererNotFound,

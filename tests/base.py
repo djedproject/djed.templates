@@ -54,6 +54,6 @@ class BaseTestCase(TestCase):
         self.registry = self.config.registry
 
         if self._include:
-            self.config.include('player')
+            self.config.include('djed.templates')
 
         self.request = self.make_request()

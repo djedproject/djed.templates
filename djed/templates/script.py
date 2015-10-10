@@ -1,4 +1,4 @@
-""" player command """
+""" djed.templates command """
 from __future__ import print_function
 import os
 import argparse
@@ -32,7 +32,7 @@ def main():
 
 class LayersCommand(object):
 
-    parser = argparse.ArgumentParser(description="player management")
+    parser = argparse.ArgumentParser(description="djed.templates management")
     parser.add_argument('config', metavar='config',
                         help='ini config file')
 

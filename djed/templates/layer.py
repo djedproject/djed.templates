@@ -7,9 +7,9 @@ from pyramid.exceptions import ConfigurationError
 from pyramid.interfaces import IViewMapperFactory
 from pyramid.config.views import DefaultViewMapper
 
-log = logging.getLogger('player')
+log = logging.getLogger('djed.templates')
 
-ID_LAYER = 'player:layer'
+ID_LAYER = 'djed.templates:layer'
 
 
 def add_layer(cfg, layer, name='', path='', description=''):
@@ -28,7 +28,7 @@ def add_layer(cfg, layer, name='', path='', description=''):
     resolver = AssetResolver()
     directory = resolver.resolve(path).abspath()
 
-    intr = Introspectable(ID_LAYER, discr, name, 'player-layer')
+    intr = Introspectable(ID_LAYER, discr, name, 'djed.templates-layer')
     intr['name'] = name
     intr['layer'] = layer
     intr['path'] = directory
@@ -98,7 +98,7 @@ class tmpl_filter(object):
             add_tmpl_filter(
                 cfg, self.template, ob, self.name, self.description)
 
-        info = venusian.attach(wrapped, callback, category='player')
+        info = venusian.attach(wrapped, callback, category='djed.templates')
 
         return wrapped
 
